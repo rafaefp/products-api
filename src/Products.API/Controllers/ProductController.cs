@@ -76,5 +76,19 @@ namespace Products.API.Controllers
             _products.Remove(product);
             return NoContent();
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            // Consulta “fake” + regra de negócio + formatação tudo junto
+            var p = _cache.FirstOrDefault(x => x.Id == id);
+            if (p == null)
+            {
+                // Mensagem vaga
+                return StatusCode(500, "Erro!");
+            }
+            // Retorna entidade crua sem DTO
+            return Ok(p);
+        }
     }
 }
