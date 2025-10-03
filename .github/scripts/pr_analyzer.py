@@ -470,7 +470,7 @@ def main():
     elif truncated:
         print("Patch truncado — não gerando sugestões inline para evitar inconsistências.")
 
-    print("✅ Finalizado.")
+print("✅ Análise concluída com sucesso.")
 
 if __name__ == "__main__":
     main()
