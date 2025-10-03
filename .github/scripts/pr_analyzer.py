@@ -71,7 +71,7 @@ def call_llm_for_suggestions(patch: str, truncated: bool) -> Dict[str, Any]:
     url = f"{endpoint}/openai/deployments/{deployment}/chat/completions?api-version={api_version}"
     print(f"[DEBUG] Calling Azure OpenAI: deployment={deployment} api_version={api_version}")
 
-    trunc_note = "Patch truncado; limite sua análise a apenas a parte exibida." if truncated else ""
+trunc_note = "Patch truncado; limite sua análise a apenas a parte exibida." if truncated else "Sem truncamento."
 
     # Prompt: instruções rígidas para produzir JSON.
     user_prompt = f"""
