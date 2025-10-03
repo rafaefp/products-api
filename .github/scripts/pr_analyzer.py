@@ -36,7 +36,7 @@ def analyze_with_azure_openai(patch):
     print(f"[DEBUG] Chamando Azure OpenAI deployment='{deployment}', api_version='{api_version}', endpoint='{endpoint}'")
 
     prompt = f"""
-Você é um revisor de código automatizado. Analise o patch abaixo e gere:
+Analise o patch abaixo e gere:
 - resumo curto (1-2 linhas),
 - possíveis bugs, riscos de segurança,
 - sugestões de melhoria,
@@ -46,7 +46,12 @@ Patch:
 {patch}
 """
 
-    body = {"input": prompt}
+    body = {
+        "messages": [
+            {"role": "system", "content": "Você é um revisor de código automatizado."},
+            {"role": "user", "content": prompt}
+        ]
+    }
     headers = {"Content-Type": "application/json", "api-key": api_key}
 
     res = requests.post(url, headers=headers, json=body, timeout=120)
