@@ -27,19 +27,9 @@ def analyze_with_azure_openai(patch):
     """Chama o Azure OpenAI Responses API"""
     endpoint = os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/")
     api_key = os.environ["AZURE_OPENAI_API_KEY"]
-    # deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o")
-    deployment = "gpt-4o"
-    # api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-10-21")
-    api_version = "2025-01-01-preview"
-
-    if not deployment:
-        print(
-            "ERRO: Variável AZURE_OPENAI_DEPLOYMENT (ou AZURE_OPENAI_DEPLOYMENT_NAME) não definida. "
-            "Verifique o mapeamento de secrets no workflow.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-
+    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o")
+    api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-10-21")
+    
     url = f"{endpoint}/openai/deployments/{deployment}/chat/completions?api-version={api_version}"
 
     # Log seguro (não mostra chave)
