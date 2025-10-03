@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 import os
+import sys
 import requests
-from github import Github
+from github import Github, Auth
 
 def get_pr_files(repo_fullname, pr_number, gh_token):
     """Busca os patches dos arquivos alterados no PR"""
-    g = Github(gh_token)
+    g = Github(auth=Auth.Token(gh_token))
     repo = g.get_repo(repo_fullname)
     pr = repo.get_pull(pr_number)
     files = pr.get_files()
@@ -26,13 +27,16 @@ def analyze_with_azure_openai(patch):
     """Chama o Azure OpenAI Responses API"""
     endpoint = os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/")
     api_key = os.environ["AZURE_OPENAI_API_KEY"]
-    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT", "my-gpt-deploy")
+    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o")
     api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-10-21")
+    
+    url = f"{endpoint}/openai/deployments/{deployment}/chat/completions?api-version={api_version}"
 
-    url = f"{endpoint}/openai/deployments/{deployment}/responses?api-version={api_version}"
+    # Log seguro (não mostra chave)
+    print(f"[DEBUG] Chamando Azure OpenAI deployment='{deployment}', api_version='{api_version}', endpoint='{endpoint}'")
 
     prompt = f"""
-Você é um revisor de código automatizado. Analise o patch abaixo e gere:
+Analise o patch abaixo e gere:
 - resumo curto (1-2 linhas),
 - possíveis bugs, riscos de segurança,
 - sugestões de melhoria,
@@ -42,22 +46,32 @@ Patch:
 {patch}
 """
 
-    body = {"input": prompt}
+    body = {
+        "messages": [
+            {"role": "system", "content": "Você é um revisor de código automatizado."},
+            {"role": "user", "content": prompt}
+        ]
+    }
     headers = {"Content-Type": "application/json", "api-key": api_key}
 
-    res = requests.post(url, headers=headers, json=body)
+    res = requests.post(url, headers=headers, json=body, timeout=120)
     if not res.ok:
-        raise Exception(f"Azure OpenAI request failed: {res.status_code} {res.text}")
+        raise Exception(
+            f"Azure OpenAI request failed: {res.status_code} {res.text}\n"
+            f"(Verifique se o deployment '{deployment}' existe e está ativo na resource do Azure OpenAI.)"
+        )
 
     data = res.json()
 
     review_text = ""
+    # Formato Responses API (preview)
     if "output" in data and isinstance(data["output"], list):
         for o in data["output"]:
             if "content" in o:
                 for c in o["content"]:
                     if "text" in c:
                         review_text += c["text"]
+    # Fallback para formato Chat Completions (caso esteja usando outro endpoint por engano)
     elif "choices" in data:
         review_text = data["choices"][0]["message"]["content"]
 
@@ -65,7 +79,7 @@ Patch:
 
 def post_comment(repo_fullname, pr_number, gh_token, review_text):
     """Cria ou atualiza comentário no PR"""
-    g = Github(gh_token)
+    g = Github(auth=Auth.Token(gh_token))
     repo = g.get_repo(repo_fullname)
     pr = repo.get_pull(pr_number)
 
