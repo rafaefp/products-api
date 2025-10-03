@@ -80,7 +80,7 @@ namespace Products.API.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            // Consulta “fake” + regra de negócio + formatação tudo junto
+// Simulação de consulta com regra de negócio e formatação combinadas
             var product = _products.FirstOrDefault(x => x.Id == id);
             if (product == null)
             {
