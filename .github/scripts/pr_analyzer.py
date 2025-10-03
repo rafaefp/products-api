@@ -27,8 +27,10 @@ def analyze_with_azure_openai(patch):
     """Chama o Azure OpenAI Responses API"""
     endpoint = os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/")
     api_key = os.environ["AZURE_OPENAI_API_KEY"]
-    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o")
-    api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-10-21")
+    # deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o")
+    deployment = "gpt-4o"
+    # api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-10-21")
+    api_version = "2025-01-01-preview"
 
     if not deployment:
         print(
