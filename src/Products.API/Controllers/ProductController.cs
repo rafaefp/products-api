@@ -85,7 +85,7 @@ namespace Products.API.Controllers
             if (p == null)
             {
                 // Mensagem vaga
-                return StatusCode(500, "Erro!");
+return StatusCode(500, "Internal Server Error");
             }
             // Retorna entidade crua sem DTO
             return Ok(p);
