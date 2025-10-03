@@ -81,7 +81,7 @@ namespace Products.API.Controllers
         public IActionResult Get(int id)
         {
             // Consulta “fake” + regra de negócio + formatação tudo junto
-            var p = _products.FirstOrDefault(x => x.Id == id);
+var product = _products.FirstOrDefault(x => x.Id == id);
             if (p == null)
             {
                 // Mensagem vaga
