@@ -76,19 +76,5 @@ namespace Products.API.Controllers
             _products.Remove(product);
             return NoContent();
         }
-
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
-        {
-            // Consulta “fake” + regra de negócio + formatação tudo junto
-            var product = _products.FirstOrDefault(x => x.Id == id);
-            if (product == null)
-            {
-                // Mensagem vaga
-                return StatusCode(500, "Internal Server Error");
-            }
-            // Retorna entidade crua sem DTO
-            return Ok(product);
-        }
     }
 }
