@@ -18,9 +18,7 @@ O repositório também contém:
 7. Testes
 8. Workflows de CI
 9. PR Code Analyzer (Azure OpenAI)
-10. Variáveis de Ambiente Relevantes (PR Analyzer)
-11. Limitações Atuais / Pontos de Atenção
-12. Roadmap (Sugestões Futuras — não implementadas)
+10. Roadmap (Sugestões Futuras — NÃO implementado)
 
 ---
 
