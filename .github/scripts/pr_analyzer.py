@@ -27,12 +27,7 @@ def analyze_with_azure_openai(patch):
     """Chama o Azure OpenAI Responses API"""
     endpoint = os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/")
     api_key = os.environ["AZURE_OPENAI_API_KEY"]
-    # Suporta ambos nomes de env por segurança
-    deployment = (
-        os.environ.get("AZURE_OPENAI_DEPLOYMENT")
-        or os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME")
-        or ""
-    )
+    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4o")
     api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-10-21")
 
     if not deployment:
@@ -43,7 +38,7 @@ def analyze_with_azure_openai(patch):
         )
         sys.exit(1)
 
-    url = f"{endpoint}/openai/deployments/{deployment}/responses?api-version={api_version}"
+    url = f"{endpoint}/openai/deployments/{deployment}/chat/completions?api-version={api_version}"
 
     # Log seguro (não mostra chave)
     print(f"[DEBUG] Chamando Azure OpenAI deployment='{deployment}', api_version='{api_version}', endpoint='{endpoint}'")
