@@ -26,10 +26,10 @@ def analyze_with_azure_openai(patch):
     """Chama o Azure OpenAI Responses API"""
     endpoint = os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/")
     api_key = os.environ["AZURE_OPENAI_API_KEY"]
-    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT", "my-gpt-deploy")
+    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT_NAME", "my-gpt-deploy")
     api_version = os.environ.get("AZURE_OPENAI_API_VERSION", "2024-10-21")
 
-    url = f"{endpoint}/openai/deployments/{deployment}/responses?api-version={api_version}"
+    url = f"{endpoint}/openai/deployments/{deployment}/chat/completions?api-version={api_version}"
 
     prompt = f"""
 Você é um revisor de código automatizado. Analise o patch abaixo e gere:
